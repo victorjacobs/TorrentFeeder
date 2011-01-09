@@ -34,7 +34,7 @@
 		
 		private static function logLine($string) {
 			$backtrace = debug_backtrace();
-			echo "<pre>". $string .". Triggered in file <b>". $backtrace[0]["file"] . "</b> on line <b>". $backtrace[0]["line"] ."</b></pre>";
+			echo "<pre>DEBUG: ". ucfirst($string) .". Triggered in file <b>". $backtrace[1]["file"] . "</b> on line <b>". $backtrace[1]["line"] ."</b></pre>";
 			
 			unset($backtrace);
 			return;

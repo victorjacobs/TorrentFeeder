@@ -41,7 +41,7 @@
 			if($numPages != 1) {
 				$data = array();
 				
-				for($i = 1; $i <= $numPages; $i++) {
+				for($i = 0; $i <= $numPages; $i++) {
 					$temp = $this->fetchData($query_string, $i);
 					$data = array_merge($data, $temp);
 				}
@@ -78,8 +78,14 @@
 		*/
 		private function fetchData($query_string, $page) {
 			$i = 0;
+			Core::debugLog("query string is <b>". str_replace("%p", $page, $query_string) ."</b>");
+			
 			while(is_null($data = $this->processRawDataDOM(@file_get_contents(str_replace("%p", $page, $query_string))))
-				&& $i < Configuration::TRACKER_FETCH_RETRY) $i++;
+				&& $i < Configuration::TRACKER_FETCH_RETRY) {
+				// Sleep some in between, sites might see this loop as a DDoS
+				sleep(5);
+				$i++;
+			}
 			
 			if($i != 0 && $i != Configuration::TRACKER_FETCH_RETRY) Core::warning("fetching tracker took $i tries");
 			if(is_null($data)) Core::fatalError("error fetching tracker (tried $i times)");
@@ -126,13 +132,16 @@
 			
 			switch($this->tracker){
 				case "thepiratebay":
-					require_once "include/plugin/thepiratebay.plugin.php";
+					// DON'T even THINK about using require_once
+					require "include/plugin/thepiratebay.plugin.php";
 					
 					return $output;
 				break;
 				
 				default: return false;
 			}
+			
+			unset($dom);
 		}
 		
 		/**
