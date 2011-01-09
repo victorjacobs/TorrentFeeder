@@ -5,6 +5,12 @@
 									"placeholder" => "http://yaddayadda/");
 		private $tracker;
 		
+		/**
+		* TorrentFetcher::__construct
+		*  Sets up the TorrentFetcher object. The method checks whether $tracker exists and sets
+		*  self::tracker to the tracker name. This variable is then used in other methods.
+		*/
+		
 		public function __construct($tracker) {
 			if(!isset($this->trackers[$tracker])) {
 				// Default to thepiratebay
@@ -15,17 +21,33 @@
 			$this->tracker = $tracker;
 		}
 		
+		/**
+		* TorrentFetcher::lookup
+		*  Goes out to fetch html from tracker, parses it and returns a pretty assoc array with
+		*  valid torrents.
+		*  It has following structure:
+		*		"id" => 		Episode id
+		*		"fileSize" => 	Size of torrent
+		*		"link" =>		Link to torrent file
+		*		"date" =>		Date uploaded
+		*		"fileName" =>	Name of the file
+		*/
+		
 		public function lookup($lookup_string, $numPages = 1) {
+			// Firstly replace the search string in placeholder url
 			$query_string = str_replace("%s", str_replace(" ", "%20", $lookup_string), $this->trackers[$this->tracker]);
 			
+			// Fetch multiple pages
 			if($numPages != 1) {
+				$data = array();
+				
+				for($i = 1; $i <= $numPages; $i++) {
+					$temp = $this->fetchData($query_string, $i);
+					$data = array_merge($data, $temp);
+				}
 				
 			}else{
-				$i = 0;
-				while(is_null($data = $this->processRawDataDOM(file_get_contents(str_replace("%p", 1, $query_string))))
-					&& $i <= 10) $i++;
-				
-				if(is_null($data)) Core::fatalError("error fetching tracker (tried $i times)");
+				$data = $this->fetchData($query_string, 1);
 			}
 			
 			
@@ -44,30 +66,57 @@
 			}
 			
 			// Sort
-			usort($validTorrents, create_function('$a, $b', '
-				$a = str_replace(array("S", "E"), "", strtoupper($a["id"]));
-				$b = str_replace(array("S", "E"), "", strtoupper($b["id"]));
-				
-				// Compare season
-				if((int)substr($a, 0, 2) < (int)substr($b, 0, 2)) {
-					return 1;
-				}elseif((int)substr($a, 0, 2) > (int)substr($b, 0, 2)) {
-					return -1;
-				}elseif((int)substr($a, 0, 2) == (int)substr($b, 0, 2)){
-					// Compare episode
-					if((int)substr($a, 2, 2) < (int)substr($b, 2, 2)){
-						return 1;
-					}elseif((int)substr($a, 2, 2) > (int)substr($b, 2, 2)){
-						return -1;
-					}else{
-						return 0;
-					}
-				}
-			'));
+			usort($validTorrents, array("TorrentFetcher", "compareEpisodes"));
 			
 			Core::debugLog($validTorrents);
 		}
 		
+		/**
+		* TorrentFetcher::fetchData
+		*  Wrapper around torrentFetcher::processRawDataDOM to account for multiple tries, alternative pages
+		*  and error handling
+		*/
+		private function fetchData($query_string, $page) {
+			$i = 0;
+			while(is_null($data = $this->processRawDataDOM(@file_get_contents(str_replace("%p", $page, $query_string))))
+				&& $i < Configuration::TRACKER_FETCH_RETRY) $i++;
+			
+			if($i != 0 && $i != Configuration::TRACKER_FETCH_RETRY) Core::warning("fetching tracker took $i tries");
+			if(is_null($data)) Core::fatalError("error fetching tracker (tried $i times)");
+			
+			return $data;
+		}
+		
+		/**
+		* TorrentFetcher::compareEpisodes
+		*  Compares episodes, used for usort
+		*/
+		public static function compareEpisodes($a, $b) {
+			$a = str_replace(array("S", "E"), "", strtoupper($a["id"]));
+			$b = str_replace(array("S", "E"), "", strtoupper($b["id"]));
+			
+			// Compare season
+			if((int)substr($a, 0, 2) < (int)substr($b, 0, 2)) {
+				return 1;
+			}elseif((int)substr($a, 0, 2) > (int)substr($b, 0, 2)) {
+				return -1;
+			}elseif((int)substr($a, 0, 2) == (int)substr($b, 0, 2)){
+				// Compare episode
+				if((int)substr($a, 2, 2) < (int)substr($b, 2, 2)){
+					return 1;
+				}elseif((int)substr($a, 2, 2) > (int)substr($b, 2, 2)){
+					return -1;
+				}else{
+					return 0;
+				}
+			}
+		}
+		
+		/**
+		* torrentFetcher::processRawDataDOM
+		*  Processes $data through DOM parsing. Includes include/plugin/$tracker.plugin.php for
+		*  site-specific parsing.
+		*/
 		private function processRawDataDOM($data) {
 			$dom = new DOMDocument;
 			$dom->preserveWhiteSpace = false;
@@ -86,7 +135,11 @@
 			}
 		}
 		
-		public static function is_online($tracker) {
+		/**
+		* torrentFetcher::isOnline
+		*  Placeholder for checking whether a tracker is online or not
+		*/
+		public static function isOnline($tracker) {
 			
 		}
 		

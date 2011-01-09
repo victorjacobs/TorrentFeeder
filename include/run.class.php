@@ -7,7 +7,7 @@
 			
 			$th = new TorrentFetcher("thepiratebay");
 			
-			$th->lookup("family guy");
+			$th->lookup("how i met your mother", 2);
 			
 			$fh = new FeedHandler;
 			
