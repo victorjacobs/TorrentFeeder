@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feeds>
+	<feed>
+		<searchString>How I Met Your Mother</searchString>
+		<feedPath>himym/feed.xml</feedPath>
+	</feed>
+	
+	<feed>
+		<searchString>Futurama</searchString>
+		<feedPath>futurama/feed.xml</feedPath>
+	</feed
+</feeds>

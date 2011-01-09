@@ -5,10 +5,10 @@
 	
 	require_once "include/autoload.func.php";
 	
-	define("__START_TIME", Core::timer());
+	define("__START__", Core::timer());
 	
-	new Run();
+	//new Run();
 	
-	Core::debugLog("page generating took <b>". Core::timer() - __START_TIME ."s</b>");
+	Core::debugLog("page generating took <b>". sprintf("%f", Core::timer() - __START__) ."s</b>");
 
 ?>
