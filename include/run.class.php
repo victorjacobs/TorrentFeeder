@@ -7,10 +7,13 @@
 			
 			$th = new TorrentFetcher("thepiratebay");
 			
-			$th->lookup("how i met your mother", 2);
+			$results = $th->lookup("futurama", 2);
 			
 			$fh = new FeedHandler;
 			
+			$fh->addItems($results['sd']);
+			
+			$fh->writeOutDOM("test.xml");
 		}
 		
 	}

@@ -41,34 +41,39 @@
 			if($numPages != 1) {
 				$data = array();
 				
-				for($i = 0; $i <= $numPages; $i++) {
+				for($i = 0; $i < $numPages; $i++) {
 					$temp = $this->fetchData($query_string, $i);
 					$data = array_merge($data, $temp);
 				}
 				
 			}else{
-				$data = $this->fetchData($query_string, 1);
+				// Note: first page is page 0
+				$data = $this->fetchData($query_string, 0);
 			}
-			
-			
-			//$data = $this->processRawDataDom(file_get_contents("cache"));
 			
 			// Remove all junk and doubles
 			$ids = array();
 			foreach($data as $torrent) {
-				// Torrents are discarted when: no episode id, 150mb < size < 250 mb (note: HD?)
+				// Torrents are discarted when: no episode id
 				// We also don't want anything with swesub, psp, ipod, zune in it
-				if(!is_null($torrent["id"]) && $torrent['fileSize'] > 150 && $torrent['fileSize'] < 250
-						&& !$ids[$torrent['id']] && !preg_match('$(swesub|psp|ipod|zune){1}$i', $torrent['fileName'])) {
-					$validTorrents[] = $torrent;
-					$ids[$torrent['id']] = true;
+				if(!is_null($torrent["id"]) && !preg_match('$(swesub|psp|ipod|zune){1}$i', $torrent['fileName'])) {
+					// Standard definition: filesize is mostely around 170, 180 megs (note: longer episodes?)
+					if($torrent['fileSize'] > 150 && $torrent['fileSize'] < 200 && !$ids['sd'][$torrent['id']]) {
+						$validTorrents['sd'][] = $torrent;
+						$ids['sd'][$torrent['id']] = true;
+					// HD episodes most of the time have x264 and 720p in the title
+					} elseif(preg_match('$720p$i', $torrent['fileName']) && !$ids['hd'][$torrent['id']]) {
+						$validTorrents['hd'][] = $torrent;
+						$ids['hd'][$torrent['id']] = true;
+					}
 				}
 			}
 			
-			// Sort
-			usort($validTorrents, array("TorrentFetcher", "compareEpisodes"));
+			// Sort (we could use map() here)
+			usort($validTorrents['sd'], array("TorrentFetcher", "compareEpisodes"));
+			if(!is_null($validTorrents['hd'])) usort($validTorrents['hd'], array("TorrentFetcher", "compareEpisodes"));
 			
-			Core::debugLog($validTorrents);
+			return $validTorrents;
 		}
 		
 		/**
@@ -82,12 +87,12 @@
 			
 			while(is_null($data = $this->processRawDataDOM(@file_get_contents(str_replace("%p", $page, $query_string))))
 				&& $i < Configuration::TRACKER_FETCH_RETRY) {
-				// Sleep some in between, sites might see this loop as a DDoS
+				// Sleep some in between tries, if site fetching failed, by now it might have recovered
 				sleep(5);
 				$i++;
 			}
 			
-			if($i != 0 && $i != Configuration::TRACKER_FETCH_RETRY) Core::warning("fetching tracker took $i tries");
+			if($i != 0 && $i != Configuration::TRACKER_FETCH_RETRY) Core::warning("fetching tracker took $i retries");
 			if(is_null($data)) Core::fatalError("error fetching tracker (tried $i times)");
 			
 			return $data;

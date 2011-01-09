@@ -16,9 +16,10 @@
 		
 		public function addItems($itemsList) {
 			if(!is_array($itemsList)) Core::fatalError("FeedHandler::addItems didn't get an array as input");
+			Core::debugLog("FeedHandler::addItems got an array with ". count($itemsList) ." items");
 			
-			foreach($itemslist as $item) {
-				$this->addItem($item["title"], $item["link"], $item["pubDate"]);
+			foreach($itemsList as $item) {
+				$this->addItem($item["fileName"], $item["link"], $item["date"]);
 			}
 		}
 		
@@ -43,6 +44,7 @@
 		}
 		
 		private function setupDOM() {
+			Core::debugLog("setting up DOM");
 			// Create root element
 			$root = $this->dom->createElement('rss');
 			$root->setAttribute("version", "2.0");
