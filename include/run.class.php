@@ -7,11 +7,13 @@
 			
 			$results = $th->lookup("futurama", 2);
 			
-			$fh = new FeedHandler;
+			Core::debugLog($results);
 			
-			$fh->addItems($results['sd']);
+			//$fh = new FeedHandler;
 			
-			$fh->writeOutDOM("test.xml");
+			//$fh->addItems($results['sd']);
+			
+			//$fh->writeOutDOM("test.xml");
 		}
 		
 		public static function cron() {

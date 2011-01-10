@@ -1,7 +1,7 @@
 <?php
 
 	class TorrentFetcher {
-		private $trackers = array("thepiratebay" => "http://www.thepiratebay.org/search/%s/%p/99/0",
+		private $trackers = array("thepiratebay" => "http://www.thepiratebay.org/search/%s/%p/7/0",
 									"placeholder" => "http://yaddayadda/");
 		private $tracker;
 		
