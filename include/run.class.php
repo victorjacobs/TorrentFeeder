@@ -3,17 +3,8 @@
 	class Run{
 		
 		public function __construct() {
-			$th = new TorrentFetcher("thepiratebay");
+			$foo = new EpGuides("bigbangtheory");
 			
-			$results = $th->lookup("futurama", 2);
-			
-			Core::debugLog($results);
-			
-			//$fh = new FeedHandler;
-			
-			//$fh->addItems($results['sd']);
-			
-			//$fh->writeOutDOM("test.xml");
 		}
 		
 		public static function cron() {

@@ -7,15 +7,18 @@
 	<feed name="How I Met Your Mother">
 		<searchString>how I met your mother</searchString>
 		<feedPath>himym/</feedPath>
+		<epGuidesPath>foo</epGuidesPath>
 	</feed>
 	
 	<feed name="Futurama">
 		<searchString>futurama</searchString>
 		<feedPath>futurama/</feedPath>
+		<epGuidesPath>foo</epGuidesPath>
 	</feed>
 	
 	<feed name="The Big Bang Theory">
 		<searchString>big bang theory</searchString>
 		<feedPath>bigbangtheory/</feedPath>
+		<epGuidesPath>foo</epGuidesPath>
 	</feed>
 </feeds>
