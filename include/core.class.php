@@ -18,7 +18,7 @@
 			} elseif(!is_string($data)) {
 				var_dump($data);
 			} else {
-				self::logLine("DEBUG: ". $data);
+				self::logLine("DEBUG: ". ucfirst($data));
 			}
 		}
 		
