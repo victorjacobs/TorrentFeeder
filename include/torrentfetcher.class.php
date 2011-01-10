@@ -99,31 +99,6 @@
 		}
 		
 		/**
-		* TorrentFetcher::compareEpisodes
-		*  Compares episodes, used for usort
-		*/
-		public static function compareEpisodes($a, $b) {
-			$a = str_replace(array("S", "E"), "", strtoupper($a["id"]));
-			$b = str_replace(array("S", "E"), "", strtoupper($b["id"]));
-			
-			// Compare season
-			if((int)substr($a, 0, 2) < (int)substr($b, 0, 2)) {
-				return 1;
-			}elseif((int)substr($a, 0, 2) > (int)substr($b, 0, 2)) {
-				return -1;
-			}elseif((int)substr($a, 0, 2) == (int)substr($b, 0, 2)){
-				// Compare episode
-				if((int)substr($a, 2, 2) < (int)substr($b, 2, 2)){
-					return 1;
-				}elseif((int)substr($a, 2, 2) > (int)substr($b, 2, 2)){
-					return -1;
-				}else{
-					return 0;
-				}
-			}
-		}
-		
-		/**
 		* torrentFetcher::processRawDataDOM
 		*  Processes $data through DOM parsing. Includes include/plugin/$tracker.plugin.php for
 		*  site-specific parsing.
@@ -131,6 +106,8 @@
 		private function processRawDataDOM($data) {
 			$dom = new DOMDocument;
 			$dom->preserveWhiteSpace = false;
+			
+			if(is_null($data)) Core::fatalError("TorrentFetcher::processRawDataDOM didn't get any \$data!!");
 			
 			// Supress warnings caused by non-validness + remove all html entities
 			@$dom->loadHTML(preg_replace("/&#?[a-z0-9]{2,8};/i", "", str_replace("&nbsp;", " ", $data)));
@@ -155,6 +132,33 @@
 		*/
 		public static function isOnline($tracker) {
 			
+		}
+		
+		
+		
+		/**
+		* TorrentFetcher::compareEpisodes
+		*  Compares episodes, used for usort
+		*/
+		public static function compareEpisodes($a, $b) {
+			$a = str_replace(array("S", "E"), "", strtoupper($a["id"]));
+			$b = str_replace(array("S", "E"), "", strtoupper($b["id"]));
+			
+			// Compare season
+			if((int)substr($a, 0, 2) < (int)substr($b, 0, 2)) {
+				return 1;
+			}elseif((int)substr($a, 0, 2) > (int)substr($b, 0, 2)) {
+				return -1;
+			}elseif((int)substr($a, 0, 2) == (int)substr($b, 0, 2)){
+				// Compare episode
+				if((int)substr($a, 2, 2) < (int)substr($b, 2, 2)){
+					return 1;
+				}elseif((int)substr($a, 2, 2) > (int)substr($b, 2, 2)){
+					return -1;
+				}else{
+					return 0;
+				}
+			}
 		}
 		
 	}

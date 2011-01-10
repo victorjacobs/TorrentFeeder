@@ -3,8 +3,10 @@
 	class Run{
 		
 		public function __construct() {
-			$foo = new EpGuides("bigbangtheory");
+			//$foo = new EpGuides("bigbangtheory");
 			
+			$foo = new TorrentFetcher("thepiratebay");
+			var_dump($foo->lookup("how i met your mother", 1));
 		}
 		
 		public static function cron() {

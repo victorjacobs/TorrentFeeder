@@ -8,18 +8,17 @@
 	}
 	
 	// $table contains the information we need, now we need to parse every row seperately
-	// NOTE: rewrite for loops to foreach loops, since PHP is nice enough to use Iterators for DOMLists
-	for($i = 0; $i < $table->length; $i++) {
+	foreach($table as $curr_row) {
 		// Get third child of every row, this *should* be the <td> with needed data
-		$curr_el = $table->item($i)->childNodes->item(2);
+		$curr_el = $curr_row->childNodes->item(2);
 		// Check above condition
 		if($curr_el->nodeName != "td" || $curr_el->hasAttributes())
 			Core::fatalError("The Piratebay DOM changed!");
 		
 		// We only need the first encountered anchor, so break after finding it
-		for($j = 0; $j < $curr_el->childNodes->length; $j++) {
-			if($curr_el->childNodes->item($j)->nodeName == "a") {
-				$downloadLink = $curr_el->childNodes->item($j);
+		foreach($curr_el->childNodes as $tag) {
+			if($tag->nodeName == "a") {
+				$downloadLink = $tag;
 				break;
 			}
 		}
