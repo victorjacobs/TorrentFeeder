@@ -8,9 +8,6 @@
 		private $dom, $setupDone, $channelNode;
 		
 		public function __construct() {
-			$this->dom = new DOMDocument('1.0', 'UTF-8');
-			$this->dom->formatOutput = true;
-			
 			$this->setupDOM();
 		}
 		
@@ -45,6 +42,9 @@
 		
 		private function setupDOM() {
 			Core::debugLog("setting up DOM");
+			$this->dom = new DOMDocument('1.0', 'UTF-8');
+			$this->dom->formatOutput = true;
+			
 			// Create root element
 			$root = $this->dom->createElement('rss');
 			$root->setAttribute("version", "2.0");
@@ -87,10 +87,21 @@
 		}
 		
 		public function writeOutDOM($location) {
+			// If dirname($location) doesn't exist, create it
+			if(!file_exists(dirname($location))) {
+				Core::debugLog(dirname($location) ." doesn't exist, gonna try to create it");
+				mkdir(dirname($location));
+			}
+			
 			if(($fh = fopen($location, "w")) === false) Core::fatalError("couldn't open $location for writing");
 			
 			fwrite($fh, $this->dom->saveXML());
 			fclose($fh);
+			
+			// After writeOut, we recreate the DOMDocument for new use
+			Core::debugLog("resetting DOM");
+			unset($this->dom);
+			$this->setupDOM();
 			
 			return true;
 		}

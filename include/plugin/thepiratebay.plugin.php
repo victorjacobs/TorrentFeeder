@@ -8,6 +8,7 @@
 	}
 	
 	// $table contains the information we need, now we need to parse every row seperately
+	// NOTE: rewrite for loops to foreach loops, since PHP is nice enough to use Iterators for DOMLists
 	for($i = 0; $i < $table->length; $i++) {
 		// Get third child of every row, this *should* be the <td> with needed data
 		$curr_el = $table->item($i)->childNodes->item(2);

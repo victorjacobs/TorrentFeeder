@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feeds>
-	<feed>
-		<searchString>How I Met Your Mother</searchString>
-		<feedPath>himym/feed.xml</feedPath>
+	<global>
+		<numPagesToFetch>5</numPagesToFetch>
+	</global>
+	
+	<feed name="How I Met Your Mother">
+		<searchString>how I met your mother</searchString>
+		<feedPath>himym/</feedPath>
 	</feed>
 	
-	<feed>
-		<searchString>Futurama</searchString>
-		<feedPath>futurama/feed.xml</feedPath>
-	</feed
+	<feed name="Futurama">
+		<searchString>futurama</searchString>
+		<feedPath>futurama/</feedPath>
+	</feed>
+	
+	<feed name="The Big Bang Theory">
+		<searchString>big bang theory</searchString>
+		<feedPath>bigbangtheory/</feedPath>
+	</feed>
 </feeds>
