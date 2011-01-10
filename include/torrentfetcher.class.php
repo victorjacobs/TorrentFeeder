@@ -56,7 +56,7 @@
 			foreach($data as $torrent) {
 				// Torrents are discarted when: no episode id
 				// We also don't want anything with swesub, psp, ipod, zune in it
-				if(!is_null($torrent["id"]) && !preg_match('$(swesub|psp|ipod|zune){1}$i', $torrent['fileName'])) {
+				if(!is_null($torrent["id"]) && !preg_match('$(swesub|psp|ipod|zune|norsub){1}$i', $torrent['fileName'])) {
 					// Standard definition: filesize is mostely around 170, 180 megs (note: longer episodes?)
 					if($torrent['fileSize'] > 150 && $torrent['fileSize'] < 200 && !$ids['sd'][$torrent['id']]) {
 						$validTorrents['sd'][] = $torrent;
