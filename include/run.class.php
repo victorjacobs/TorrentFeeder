@@ -3,8 +3,6 @@
 	class Run{
 		
 		public function __construct() {
-			//$foo = new EpGuides("bigbangtheory");
-			
 			$foo = new TorrentFetcher("thepiratebay");
 			var_dump($foo->lookup("how i met your mother", "howimetyourmother", 1));
 		}
@@ -15,11 +13,14 @@
 			$dom = new DOMDocument;
 			$dom->preserveWhiteSpace = false;
 			$dom->loadXML(file_get_contents("feeds.xml"));
+			
 			// Create TorrentFetcher and three FeedHandlers (one that writes every feed seperately and three for aggregate feed)
 			$th = new TorrentFetcher("thepiratebay");
 			$fh = new FeedHandler;
 			$fhAggregateSD = new FeedHandler;
+			$fhAggregateSD->setupDOM("TorrentFeeder v". Configuration::VERSION ." - All - Standard Definition");
 			$fhAggregateHD = new FeedHandler;
+			$fhAggregateHD->setupDOM("TorrentFeeder v". Configuration::VERSION ." - All - High Definition");
 			
 			// Assume it is regenerate time, so just run feed when called
 			// Note: we do everything in one loop. Saves time and memory
@@ -41,14 +42,24 @@
 				
 				// Write feed
 				$path = Configuration::FEEDS_DIR . $settings["feedPath"];
-				Core::debugLog("writing feed to ". $path . "sd.xml");
+				
+				
+				$fh->setupDOM("TorrentFeeder v". Configuration::VERSION . " - ". $feed->attributes->getNamedItem("name")->value . 
+								" - Standard Definition");
 				$fh->addItems($results['sd']);
 				$fhAggregateSD->addItems($results['sd']);
+				
+				Core::debugLog("writing feed to ". $path . "sd.xml");
 				$fh->writeOutDOM($path . "sd.xml");
 				
-				Core::debugLog("writing feed to ". $path . "hd.xml");
+				
+				
+				$fh->setupDOM("TorrentFeeder v". Configuration::VERSION . " - ". $feed->attributes->getNamedItem("name")->value . 
+								" - High Definition");
 				$fh->addItems($results['hd']);
 				$fhAggregateHD->addItems($results['hd']);
+				
+				Core::debugLog("writing feed to ". $path . "hd.xml");
 				$fh->writeOutDOM($path . "hd.xml");
 			}
 			

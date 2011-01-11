@@ -7,10 +7,6 @@
 	class FeedHandler{
 		private $dom, $setupDone, $channelNode;
 		
-		public function __construct() {
-			$this->setupDOM();
-		}
-		
 		public function addItems($itemsList) {
 			if(!is_array($itemsList)) Core::fatalError("FeedHandler::addItems didn't get an array as input");
 			Core::debugLog("FeedHandler::addItems got an array with ". count($itemsList) ." items");
@@ -47,7 +43,12 @@
 			$item->appendChild($attr);
 		}
 		
-		private function setupDOM() {
+		public function setupDOM($title) {
+			if($this->setupDone) {
+				Core::warning("DOM was already set up");
+				return;
+			}
+			
 			Core::debugLog("setting up DOM");
 			$this->dom = new DOMDocument('1.0', 'UTF-8');
 			$this->dom->formatOutput = true;
@@ -64,11 +65,11 @@
 			$this->channelNode = &$channel;
 			
 			// Title
-			$head = $this->dom->createElement('title', 'Work in progress');
+			$head = $this->dom->createElement('title', $title);
 			$channel->appendChild($head);
 			
 			// Description
-			$head = $this->dom->createElement('description', 'v0.00000001a');
+			$head = $this->dom->createElement('description', 'v'. Configuration::VERSION);
 			$channel->appendChild($head);
 			
 			// Link
@@ -108,7 +109,7 @@
 			// After writeOut, we recreate the DOMDocument for new use
 			Core::debugLog("resetting DOM");
 			unset($this->dom);
-			$this->setupDOM();
+			$this->setupDone = false;
 			
 			return true;
 		}

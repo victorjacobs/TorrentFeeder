@@ -2,11 +2,7 @@
 	
 	/**
 	* TODO:
-	*  - Plugin hierarchy!!!
-	*  - Give different feeds different titles
 	*  - General code cleanup, writing comments and making it more robust
-	*  - Add time codes in debug messages
-	*  - It's not because we get a http response, we get any useful stuff
 	*/
 	
 	define("DEBUG", true);
