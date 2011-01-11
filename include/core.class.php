@@ -35,7 +35,9 @@
 		
 		private static function logLine($string) {
 			$backtrace = debug_backtrace();
-			echo "<pre>". ucfirst($string) .". Triggered in file <b>". $backtrace[1]["file"] . "</b> on line <b>". $backtrace[1]["line"] ."</b></pre>";
+			list(, $file) = explode("htdocs", $backtrace[1]["file"]);
+			echo "<pre><b>[". sprintf("%f", Core::timer() - __START__) ."]</b> ". ucfirst($string) .". Triggered in file <b>".
+					$file . "</b> on line <b>". $backtrace[1]["line"] ."</b></pre>";
 			
 			unset($backtrace);
 			return;

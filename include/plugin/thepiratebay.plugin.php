@@ -1,14 +1,19 @@
 <?php
-
-	$table = $dom->getElementsByTagName("table")->item(0)->childNodes;
+	
+	if(is_null($dom->getElementByID("searchResult"))) Core::fatalError("The Pirate Bay down or search engine overloaded");
+	
+	// Do something here if no results
+	//if($dom->getElementByID("searchResult")->childNodes->length == 0)
+	
+	$tableRows = $dom->getElementByID("searchResult")->childNodes;
 	// Remove non data rows
-	for($i = 0; $i < $table->length; $i++) {
-		$curr_el = $table->item($i);
+	for($i = 0; $i < $tableRows->length; $i++) {
+		$curr_el = $tableRows->item($i);
 		if($curr_el->nodeName != "tr") $curr_el->parentNode->removeChild($curr_el);
 	}
 	
 	// $table contains the information we need, now we need to parse every row seperately
-	foreach($table as $curr_row) {
+	foreach($tableRows as $curr_row) {
 		// Get third child of every row, this *should* be the <td> with needed data
 		$curr_el = $curr_row->childNodes->item(2);
 		// Check above condition

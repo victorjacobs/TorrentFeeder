@@ -26,16 +26,18 @@
 			//  Sidenote: gotta love how PHP uses Iterators in foreach
 			foreach($dom->getElementsByTagName("feed") as $feed) {
 				Core::debugLog("starting feed ". $feed->attributes->getNamedItem("name")->value);
+				
 				foreach($feed->childNodes as $setting) {
 					switch($setting->nodeName) {
 						case "searchString": $settings["searchString"] = $setting->nodeValue; break;
 						case "feedPath": $settings["feedPath"] = $setting->nodeValue; break;
+						case "epGuidesPath": $settings["epGuidesPath"] = $setting->nodeValue; break;
 					}
 				}
 				
 				// Lookup, just do one page for now, I don't have all day
-				Core::debugLog("starting lookup");
-				$results = $th->lookup($settings["searchString"], 5);
+				Core::debugLog("starting TorrentHandler::lookup");
+				$results = $th->lookup($settings["searchString"], $settings['epGuidesPath'], Configuration::NUM_RESULT_PAGES);
 				
 				// Write feed
 				$path = Configuration::FEEDS_DIR . $settings["feedPath"];

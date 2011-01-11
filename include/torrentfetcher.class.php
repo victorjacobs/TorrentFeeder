@@ -1,7 +1,7 @@
 <?php
 
 	class TorrentFetcher {
-		private $trackers = array("thepiratebay" => "http://www.thepiratebay.org/search/%s/%p/7/0",
+		private $trackers = array("thepiratebay" => "http://www.thepiratebay.org/search/%s/%p/7/0/",
 									"placeholder" => "http://yaddayadda/");
 		private $tracker;
 		
@@ -85,7 +85,7 @@
 						
 					// HD episodes most of the time have x264 and 720p in the title
 					} elseif(preg_match('$720p$i', $torrent['fileName']) && !$ids['hd'][$torrent['id']]) {
-						$validTorrents['hd'][] = array_merge($torrent, $epGuides->lookup($torrent['id']));
+						$validTorrents['hd'][] = array_merge($torrent, $torrentExtendedData);
 						$ids['hd'][$torrent['id']] = true;
 					}
 				}

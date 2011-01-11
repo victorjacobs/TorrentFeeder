@@ -2,10 +2,11 @@
 	
 	/**
 	* TODO:
-	*  - When someone uploads an older episode again, it will come at the top of the feed. But since
-	*     it's an older episode, this behavior is not wanted. ==> http://epguides.com/ parsing
+	*  - Plugin hierarchy!!!
 	*  - Give different feeds different titles
 	*  - General code cleanup, writing comments and making it more robust
+	*  - Add time codes in debug messages
+	*  - It's not because we get a http response, we get any useful stuff
 	*/
 	
 	define(DEBUG, true);
