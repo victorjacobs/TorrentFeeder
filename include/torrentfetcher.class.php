@@ -3,7 +3,7 @@
 	class TorrentFetcher {
 		private $trackers = array("thepiratebay" => "http://www.thepiratebay.org/search/%s/%p/7/0/",
 									"placeholder" => "http://yaddayadda/");
-		private $tracker;
+		private $tracker, $parser;
 		
 		/**
 		* TorrentFetcher::__construct
@@ -19,6 +19,10 @@
 			}
 			
 			$this->tracker = $tracker;
+			
+			switch($this->tracker){
+				case "thepiratebay": $this->parser = new thePirateBayParserPlugin; break;
+			}
 		}
 		
 		/**
@@ -104,58 +108,30 @@
 		*  and error handling
 		*/
 		private function fetchData($query_string, $page) {
-			$i = 0;
 			Core::debugLog("query string is <b>". str_replace("%p", $page, $query_string) ."</b>");
 			
-			while(is_null($data = $this->processRawDataDOM(@file_get_contents(str_replace("%p", $page, $query_string))))
-				&& $i < Configuration::TRACKER_FETCH_RETRY) {
-				// Sleep some in between tries, if site fetching failed, by now it might have recovered
-				sleep(5);
-				$i++;
+			for($i = 0; $i < Configuration::TRACKER_FETCH_RETRY; $i++) {
+				$data = @file_get_contents(str_replace("%p", $page, $query_string));
+				
+				if(!is_null($data)) {
+					Core::debugLog("TorrentFetcher::fetchData got http response, let's see if it's useful...");
+					
+					$this->parser->load($data);
+					
+					// Success?
+					if($this->parser->hasUsefulData()) break;
+					
+					$this->parser->reset();
+					// Sleep some in between tries, if site fetching failed, by now it might have recovered
+					sleep(5);
+				}
 			}
 			
 			if($i != 0 && $i != Configuration::TRACKER_FETCH_RETRY) Core::warning("fetching tracker took $i retries");
 			if(is_null($data)) Core::fatalError("error fetching tracker (tried $i times)");
 			
-			return $data;
+			return $this->parser->getData();
 		}
-		
-		/**
-		* torrentFetcher::processRawDataDOM
-		*  Processes $data through DOM parsing. Includes include/plugin/$tracker.plugin.php for
-		*  site-specific parsing.
-		*/
-		private function processRawDataDOM($data) {
-			$dom = new DOMDocument;
-			$dom->preserveWhiteSpace = false;
-			
-			if(is_null($data)) Core::fatalError("TorrentFetcher::processRawDataDOM didn't get any \$data!!");
-			
-			// Supress warnings caused by non-validness + remove all html entities
-			@$dom->loadHTML(preg_replace("/&#?[a-z0-9]{2,8};/i", "", str_replace("&nbsp;", " ", $data)));
-			
-			switch($this->tracker){
-				case "thepiratebay":
-					// DON'T even THINK about using require_once
-					require "include/plugin/thepiratebay.plugin.php";
-					
-					return $output;
-				break;
-				
-				default: return false;
-			}
-			
-			unset($dom);
-		}
-		
-		/**
-		* torrentFetcher::isOnline
-		*  Placeholder for checking whether a tracker is online or not
-		*/
-		public static function isOnline($tracker) {
-			
-		}
-		
 		
 		
 		/**

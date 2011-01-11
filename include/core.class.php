@@ -36,7 +36,11 @@
 		private static function logLine($string) {
 			$backtrace = debug_backtrace();
 			list(, $file) = explode("htdocs", $backtrace[1]["file"]);
-			echo "<pre><b>[". sprintf("%f", Core::timer() - __START__) ."]</b> ". ucfirst($string) .". Triggered in file <b>".
+			
+			// If called in autoload function, __START__ is not yet defined, just use 0
+			$runTime = (!defined("__START__") ? 0 : Core::timer() - __START__);
+			
+			echo "<pre><b>[". sprintf("%f", $runTime) ."]</b> ". ucfirst($string) .". Triggered in file <b>".
 					$file . "</b> on line <b>". $backtrace[1]["line"] ."</b></pre>";
 			
 			unset($backtrace);
