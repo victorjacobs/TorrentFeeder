@@ -31,9 +31,17 @@
 		*		"link" =>		Link to torrent file
 		*		"date" =>		Date uploaded
 		*		"fileName" =>	Name of the file
+		*		"airDate" =>	Original air date of episode
+		*		"title" =>		Episode's title
 		*/
 		
-		public function lookup($lookup_string, $numPages = 1) {
+		public function lookup($lookup_string, $epGuidesPath = null, $numPages = 1) {
+			if(is_null($epGuidesPath)) {
+				Core::warning("didn't get \$epGuidesPath");
+			} else {
+				$epGuides = new EpGuides($epGuidesPath);
+			}
+			
 			// Firstly replace the search string in placeholder url
 			$query_string = str_replace("%s", str_replace(" ", "%20", $lookup_string), $this->trackers[$this->tracker]);
 			
@@ -54,16 +62,30 @@
 			// Remove all junk and doubles
 			$ids = array();
 			foreach($data as $torrent) {
+				// Get data from EpGuides
+				// NOTE: set it as a variable, we need a particular field in the if clause later on and php *doesn't*
+				//       allow for simultaniously calling a method and getting an assoc field from array
+				$torrentExtendedData = $epGuides->lookup($torrent['id']);
+				
 				// Torrents are discarted when: no episode id
 				// We also don't want anything with swesub, psp, ipod, zune in it
-				if(!is_null($torrent["id"]) && !preg_match('$(swesub|psp|ipod|zune|norsub){1}$i', $torrent['fileName'])) {
+				// If uploaded date is before airDate, discart it as a fake
+				// NOTE: strtotime(null) < time() evaluates as true. Always. So even if there was no hit it won't throw the
+				//  whole clause off to false
+				if(!is_null($torrent["id"]) && !preg_match('$(swesub|psp|ipod|zune|norsub){1}$i', $torrent['fileName']) &&
+						strtotime($torrentExtendedData['airDate']) <= time()) {
 					// Standard definition: filesize is mostely around 170, 180 megs (note: longer episodes?)
+					// Use EpGuides to give torrents a title and airDate using array_merge
+					// NOTE: array_merge doesn't play nice with null values, so just set to empty array if is_null
+					$torrentExtendedData = (!is_null($torrentExtendedData) ? $torrentExtendedData : array());
+					
 					if($torrent['fileSize'] > 150 && $torrent['fileSize'] < 200 && !$ids['sd'][$torrent['id']]) {
-						$validTorrents['sd'][] = $torrent;
+						$validTorrents['sd'][] = array_merge($torrent, $torrentExtendedData);
 						$ids['sd'][$torrent['id']] = true;
+						
 					// HD episodes most of the time have x264 and 720p in the title
 					} elseif(preg_match('$720p$i', $torrent['fileName']) && !$ids['hd'][$torrent['id']]) {
-						$validTorrents['hd'][] = $torrent;
+						$validTorrents['hd'][] = array_merge($torrent, $epGuides->lookup($torrent['id']));
 						$ids['hd'][$torrent['id']] = true;
 					}
 				}

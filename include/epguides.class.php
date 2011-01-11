@@ -12,19 +12,27 @@
 		public function __construct($sitePath) {
 			$this->sitePath;
 			
-			$this->parseData($arr = file_get_contents("http://epguides.com/". $sitePath));
+			if(!$this->parseData(@file_get_contents("http://epguides.com/". $sitePath))) Core::warning("epGuides fetch failed");
 		}
 		
 		public function lookup($episodeID) {
-			if(is_null($this->episodes[$episodeID])) return false
+			// Return null, normally array_merge will behave nicely when merging an array with null
+			if(is_null($this->episodes[$episodeID])) return null;
 			
 			return $this->episodes[$episodeID];
 		}
 		
 		private function parseData($data) {
+			if(is_null($data)) return false;
+			
 			$dom = new DOMDocument;
 			$dom->preserveWhiteSpace = false;
 			@$dom->loadHTML(preg_replace("/&#?[a-z0-9]{2,8};/i", "", str_replace("&nbsp;", " ", $data)));
+			
+			if($dom->getElementsByTagName("pre")->length == 0) {
+				Core::warning("Something weird has come up in the EpGuides DOM, so let's not use it!");
+				return false;
+			}
 			
 			// Run through the data line per line, needed information is enclosed in <pre> tags
 			$rawText = array_map("trim", explode("\n", trim($dom->getElementsByTagName("pre")->item(0)->nodeValue)));
@@ -49,6 +57,9 @@
 														"title" => trim(preg_replace('$\[[a-z]+\]$i', "", $episodeTitle)));
 				}
 			}
+			
+			return true;
+		
 		}
 	}
 

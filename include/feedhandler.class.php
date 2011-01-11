@@ -16,7 +16,14 @@
 			Core::debugLog("FeedHandler::addItems got an array with ". count($itemsList) ." items");
 			
 			foreach($itemsList as $item) {
-				$this->addItem($item["fileName"], $item["link"], $item["date"]);
+				// Create some cleaner titles etc
+				if(!is_null($item["title"])) {
+					$title = $item['id'] . " - " . $item["title"];
+				} else {
+					$title = $item['fileName'];
+				}
+				
+				$this->addItem($title, $item["link"], !is_null($item["airDate"]) ? $item["airDate"] : $item["date"]);
 			}
 		}
 		

@@ -6,7 +6,7 @@
 			//$foo = new EpGuides("bigbangtheory");
 			
 			$foo = new TorrentFetcher("thepiratebay");
-			var_dump($foo->lookup("how i met your mother", 1));
+			var_dump($foo->lookup("how i met your mother", "howimetyourmother", 1));
 		}
 		
 		public static function cron() {
