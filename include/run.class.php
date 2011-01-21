@@ -52,8 +52,6 @@
 				Core::debugLog("writing feed to ". $path . "sd.xml");
 				$fh->writeOutDOM($path . "sd.xml");
 				
-				
-				
 				$fh->setupDOM("TorrentFeeder v". Configuration::VERSION . " - ". $feed->attributes->getNamedItem("name")->value . 
 								" - High Definition");
 				$fh->addItems($results['hd']);

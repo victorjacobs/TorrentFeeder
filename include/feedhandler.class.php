@@ -49,7 +49,7 @@
 				return;
 			}
 			
-			Core::debugLog("setting up DOM");
+			Core::debugLog("setting up DOM with title '$title'");
 			$this->dom = new DOMDocument('1.0', 'UTF-8');
 			$this->dom->formatOutput = true;
 			
@@ -108,7 +108,7 @@
 			
 			// After writeOut, we recreate the DOMDocument for new use
 			Core::debugLog("resetting DOM");
-			unset($this->dom);
+			unset($this->dom, $this->channelnode);
 			$this->setupDone = false;
 			
 			return true;
