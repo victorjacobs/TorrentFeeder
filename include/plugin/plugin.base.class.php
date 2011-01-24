@@ -16,14 +16,18 @@
 		}
 		
 		public function reset() {
-			unset($this->data, $this->dom);
+			unset($this->torrents, $this->dom);
 			
 			$this->dom = new DOMDocument;
 			$this->dom->preserveWhiteSpace = false;
 		}
 		
 		public function getData() {
-			return $this->torrents;
+			// Make sure parser is clean after usage
+			$output = $this->torrents;
+			$this->reset();
+			
+			return $output;
 		}
 		
 		protected abstract function parse();

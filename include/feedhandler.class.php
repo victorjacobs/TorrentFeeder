@@ -73,7 +73,7 @@
 			$channel->appendChild($head);
 			
 			// Link
-			$head = $this->dom->createElement('link', "http://feeds.victorjacobs.com");
+			$head = $this->dom->createElement('link', "http://feed.victorjacobs.com");
 			$channel->appendChild($head);
 			
 			// Language
