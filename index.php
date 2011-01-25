@@ -19,6 +19,7 @@
 	
 	/**
 	* TODO:
+	*  - Write logs to file
 	*  - Automatic plugin loading
 	*  - General code cleanup, writing comments and making it more robust
 	*/

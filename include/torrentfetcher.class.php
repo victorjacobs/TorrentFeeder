@@ -100,7 +100,7 @@
 					// NOTE: array_merge doesn't play nice with null values, so just set to empty array if is_null
 					$torrentExtendedData = (!is_null($torrentExtendedData) ? $torrentExtendedData : array());
 					
-					if($torrent['fileSize'] > 150 && $torrent['fileSize'] < 200 && !$ids['sd'][$torrent['id']]) {
+					if($torrent['fileSize'] > 150 && $torrent['fileSize'] < 400 && !$ids['sd'][$torrent['id']]) {
 						$validTorrents['sd'][] = array_merge($torrent, $torrentExtendedData);
 						$ids['sd'][$torrent['id']] = true;
 						
