@@ -75,7 +75,7 @@
 		public static function log($string) {
 			$runTime = (!defined("__START__") ? 0 : Core::timer() - __START__);
 			if (php_sapi_name() == "cli") {
-				echo "[". sprintf("%f", $runTime) ."] INFO: ". ucfirst($string) ". \n";
+				echo "[". sprintf("%f", $runTime) ."] INFO: ". ucfirst($string) ." \n";
 			} else {
 				echo "<pre><b>[". sprintf("%f", $runTime) ."]</b> INFO: ". ucfirst($string) . "</pre>";
 			}
