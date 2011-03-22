@@ -17,7 +17,7 @@
 	 *    along with TorrentFeeder.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	class Run{
+	class Run {
 		
 		public function __construct() {
 			$foo = new TorrentFetcher("thepiratebay");
@@ -25,6 +25,14 @@
 		}
 		
 		public static function cron() {
+			// Log to file
+			if (Configuration::LOG_DIR && file_exists(Configuration::LOG_DIR) && is_writable(Configuration::LOG_DIR)) {
+				ob_start();
+				
+				// Echo nice header first
+				Core::log("Torrentfeeder v". Configuration::VERSION ." started on ". date("r") ."\n\n");
+			}
+			
 			Core::debugLog("starting cron task");
 			// Read out what feeds should be created from xml
 			$dom = new DOMDocument;
@@ -39,7 +47,7 @@
 			// Note: we do everything in one loop. Saves time and memory
 			//  Sidenote: gotta love how PHP uses Iterators in foreach
 			foreach($dom->getElementsByTagName("feed") as $feed) {
-				Core::debugLog("starting feed ". $feed->attributes->getNamedItem("name")->value);
+				Core::log("starting feed ". $feed->attributes->getNamedItem("name")->value);
 				
 				foreach($feed->childNodes as $setting) {
 					switch($setting->nodeName) {
@@ -71,9 +79,19 @@
 				
 				Core::debugLog("writing feed to ". $path . "hd.xml");
 				$fh->writeOutDOM($path . "hd.xml");
+				
+				Core::log("latest episode is: ". $results['sd'][0]['id'] ." - ". $results['sd'][0]['title'] . " aired on ". $results['sd'][0]['airDate']);
+				
+				Core::log("completed successfully! (wrote ". count($results['sd']) ." to SD and ". count($results['hd']) ." to HD)");
 			}
 			
-			Core::debugLog("cron task completed successfully!");
+			Core::log("cron task completed successfully!\n");
+			
+			if (Configuration::LOG_DIR && file_exists(Configuration::LOG_DIR) && is_writable(Configuration::LOG_DIR)) {
+				$output = ob_get_flush();
+				
+				file_put_contents(Configuration::LOG_DIR . date("Y-m-d-His"), $output);
+			}
 		}
 		
 	}

@@ -18,10 +18,11 @@
 	 */
 
 	class Configuration {
-		const VERSION = "0.2";
+		const VERSION = "1.0";
 		const TRACKER_FETCH_RETRY = 3;
 		const FEEDS_DIR = "feeds/";
 		const NUM_RESULT_PAGES = 5;
+		const LOG_DIR = "log/";
 	}
 
 ?>

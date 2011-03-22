@@ -19,7 +19,7 @@
 	
 	// Very simple script, handles scheduled tasks
 	
-	define("DEBUG", true);
+	define("DEBUG", false);
 	
 	require_once "include/autoload.func.php";
 	

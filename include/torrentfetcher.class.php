@@ -131,7 +131,7 @@
 				$data = @file_get_contents(str_replace("%p", $page, $query_string));
 				
 				if(!is_null($data)) {
-					Core::debugLog("TorrentFetcher::fetchData got http response, let's see if it's useful...");
+					Core::debugLog("TorrentFetcher::fetchData got http response, let's see if it's useful..");
 					
 					$this->parser->load($data);
 					
