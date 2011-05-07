@@ -57,7 +57,7 @@
 		
 		private static function logLine($string) {
 			$backtrace = debug_backtrace();
-			list(, $file) = explode("htdocs", $backtrace[1]["file"]);
+			list(, $file) = explode("torrentfeeder", $backtrace[1]["file"]);
 			
 			// If called in autoload function, __START__ is not yet defined, just use 0
 			$runTime = (!defined("__START__") ? 0 : Core::timer() - __START__);

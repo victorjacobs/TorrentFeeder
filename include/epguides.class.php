@@ -56,6 +56,7 @@
 			
 			// Useful information is in the lines that start with a number
 			foreach($rawText as $line) {
+				$line = htmlentities($line);
 				if(preg_match("$[0-9]{1}$", substr($line, 0, 1))) {
 					preg_match("$[0-9]{1,2}-[0-9]{1,2}$", $line, $temp);
 					list($season, $episode) = explode("-", $temp[0]);

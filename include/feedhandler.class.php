@@ -25,7 +25,13 @@
 		private $dom, $setupDone, $channelNode;
 		
 		public function addItems($itemsList) {
-			if(!is_array($itemsList)) Core::fatalError("FeedHandler::addItems didn't get an array as input");
+			if (is_null($itemsList)) {
+				Core::log("Received empty array");
+				return;
+			}
+			
+			if (!is_array($itemsList)) Core::fatalError("FeedHandler::addItems didn't get an array as input");
+			
 			Core::debugLog("FeedHandler::addItems got an array with ". count($itemsList) ." items");
 			
 			foreach($itemsList as $item) {

@@ -1,5 +1,5 @@
 <?php
-	
+
 	/*    This file is part of TorrentFeeder
 	 *    Copyright (C) 2011  Victor Jacobs
 	 *
@@ -18,11 +18,12 @@
 	 */
 
 	class Configuration {
-		const VERSION = "1.0";
-		const TRACKER_FETCH_RETRY = 3;
+		const VERSION = "1.1";
+		const TRACKER_FETCH_RETRY = 5;
 		const FEEDS_DIR = "feeds/";
-		const NUM_RESULT_PAGES = 5;
-		const LOG_DIR = "log/";
+		const NUM_RESULT_PAGES = 2;
+		const LOG_DIR = null;
+		//const LOG_DIR = "/var/www/feed.victorjacobs.com/logs/";
 	}
 
 ?>

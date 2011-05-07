@@ -3,6 +3,12 @@
 	<global>
 		<numPagesToFetch>5</numPagesToFetch>
 	</global>
+
+	<feed name="American Dad">
+		<searchString>american dad</searchString>
+		<feedPath>americandad/</feedPath>
+		<epGuidesPath>AmericanDad/</epGuidesPath>
+	</feed>
 	
 	<feed name="Futurama">
 		<searchString>futurama</searchString>
@@ -20,5 +26,41 @@
 		<searchString>big bang theory</searchString>
 		<feedPath>bigbangtheory/</feedPath>
 		<epGuidesPath>bigbangtheory/</epGuidesPath>
+	</feed>
+	
+	<feed name="The Mentalist">
+		<searchString>mentalist</searchString>
+		<feedPath>mentalist/</feedPath>
+		<epGuidesPath>Mentalist/</epGuidesPath>
+	</feed>
+
+	<feed name="Family Guy">
+		<searchString>family guy</searchString>
+		<feedPath>familyguy/</feedPath>
+		<epGuidesPath>familyguy/</epGuidesPath>
+	</feed>
+
+	<feed name="Blue Mountain State">
+		<searchString>blue mountain state</searchString>
+		<feedPath>bms/</feedPath>
+		<epGuidesPath>BlueMountainState/</epGuidesPath>
+	</feed>
+
+	<feed name="Hawaii Five 0">
+		<searchString>hawaii five 0</searchString>
+		<feedPath>hawaiifive0/</feedPath>
+		<epGuidesPath>HawaiiFiveO_2010/</epGuidesPath>
+	</feed>
+	
+	<feed name="House">
+		<searchString>house</searchString>
+		<feedPath>house/</feedPath>
+		<epGuidesPath>House/</epGuidesPath>
+	</feed>
+	
+	<feed name="Castle">
+		<searchString>castle</searchString>
+		<feedPath>castle/</feedPath>
+		<epGuidesPath>Castle/</epGuidesPath>
 	</feed>
 </feeds>

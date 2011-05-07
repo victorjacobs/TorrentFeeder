@@ -82,7 +82,7 @@
 				
 				Core::log("latest episode is: ". $results['sd'][0]['id'] ." - ". $results['sd'][0]['title'] . " aired on ". $results['sd'][0]['airDate']);
 				
-				Core::log("completed successfully! (wrote ". count($results['sd']) ." to SD and ". count($results['hd']) ." to HD)");
+				Core::log("completed successfully! (wrote ". count($results['sd']) ." to SD and ". count($results['hd']) ." to HD)\n");
 			}
 			
 			Core::log("cron task completed successfully!\n");
